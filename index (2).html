@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Information - 4-PCAM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .patient-record h2 {
+            color: #2d3436;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-align: center;
+            border-bottom: 3px solid #74b9ff;
+            padding-bottom: 15px;
+        }
+
+        .patient-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .form-group input, .form-group textarea {
+            padding: 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #636e72, #2d3436);
+            color: white;
+        }
+
+        .btn:disabled {
+            background: #ddd;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #00b894, #00a085);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .patient-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 PATIENT INFORMATION</h1>
+            <p><strong>4-Pillar Clinical Assessment Model (4-PCAM)</strong></p>
+            <p><strong>Developer:</strong> Dr. Smitrajsinh Jadeja, Dr. Anirudh Bhatt, Dr. Yogesh Valaki, Dr. Diksha Kanani</p>
+            <p><strong>Guided By:</strong> Dr. Prakash Kumbar</p>
+        </div>
+
+        <div class="content">
+            <div class="patient-record">
+                <h2>📋 PATIENT CASE RECORD</h2>
+                
+                <div id="status-message" class="status-message" style="display: none;"></div>
+                
+                <div class="patient-form">
+                    <div class="form-group">
+                        <label>Patient Name <span class="required">*</span></label>
+                        <input type="text" id="patientName" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Age/Sex <span class="required">*</span></label>
+                        <input type="text" id="ageSex" placeholder="e.g., 35/M or 28/F" required>
+                    </div>
+                    <div class="form-group">
+                        <label>OPD No./IPD No.</label>
+                        <input type="text" id="patientId" placeholder="Enter patient ID/number">
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Assessment</label>
+                        <input type="date" id="assessmentDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Chief Complaints <span class="required">*</span></label>
+                        <textarea id="complaints" placeholder="Describe main symptoms and duration" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Past History</label>
+                        <textarea id="pastHistory" placeholder="Previous illnesses, surgeries, medications"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Points</label>
+                        <textarea id="additionalPoints" placeholder="Family history, lifestyle, occupation, etc."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Referred By</label>
+                        <input type="text" id="referredBy" placeholder="Doctor/Clinic name">
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <h3>📊 Assessment Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progress-text">Patient information: <span id="form-status">Incomplete</span></p>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="loadPreviousData()">📥 Load Saved Data</button>
+                    <button class="btn btn-primary" id="next-btn" onclick="proceedToAgni()" disabled>Next: Agni Assessment →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Patient information management
+        let patientData = {
+            name: '',
+            ageSex: '',
+            patientId: '',
+            assessmentDate: '',
+            complaints: '',
+            pastHistory: '',
+            additionalPoints: '',
+            referredBy: '',
+            timestamp: null
+        };
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date
+            document.getElementById('assessmentDate').valueAsDate = new Date();
+            
+            // Add validation listeners
+            const requiredFields = ['patientName', 'ageSex', 'complaints'];
+            requiredFields.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                if (element) {
+                    element.addEventListener('input', validateForm);
+                    element.addEventListener('blur', validateForm);
+                }
+            });
+            
+            // Auto-save on input
+            document.querySelectorAll('input, textarea').forEach(element => {
+                element.addEventListener('input', autoSave);
+            });
+            
+            // Try to restore previous data
+            restoreAutoSavedData();
+            
+            // Initial validation
+            validateForm();
+        });
+
+        function validateForm() {
+            const name = document.getElementById('patientName').value.trim();
+            const ageSex = document.getElementById('ageSex').value.trim();
+            const complaints = document.getElementById('complaints').value.trim();
+            
+            const isValid = name && ageSex && complaints;
+            const nextBtn = document.getElementById('next-btn');
+            const statusEl = document.getElementById('form-status');
+            
+            if (isValid) {
+                nextBtn.disabled = false;
+                nextBtn.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
+                statusEl.textContent = 'Complete ✓';
+                statusEl.style.color = '#00b894';
+                hideStatusMessage();
+            } else {
+                nextBtn.disabled = true;
+                nextBtn.style.background = '#ddd';
+                statusEl.textContent = 'Incomplete';
+                statusEl.style.color = '#e74c3c';
+            }
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const fields = ['patientName', 'ageSex', 'complaints'];
+            const completed = fields.filter(id => document.getElementById(id).value.trim()).length;
+            const progress = (completed / fields.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function savePatientData() {
+            patientData = {
+                name: document.getElementById('patientName').value.trim(),
+                ageSex: document.getElementById('ageSex').value.trim(),
+                patientId: document.getElementById('patientId').value.trim(),
+                assessmentDate: document.getElementById('assessmentDate').value,
+                complaints: document.getElementById('complaints').value.trim(),
+                pastHistory: document.getElementById('pastHistory').value.trim(),
+                additionalPoints: document.getElementById('additionalPoints').value.trim(),
+                referredBy: document.getElementById('referredBy').value.trim(),
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('4pcam_patient_data', JSON.stringify(patientData));
+            return patientData;
+        }
+
+        function autoSave() {
+            savePatientData();
+        }
+
+        function restoreAutoSavedData() {
+            const saved = localStorage.getItem('4pcam_patient_data');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    if (data.name) {
+                        document.getElementById('patientName').value = data.name || '';
+                        document.getElementById('ageSex').value = data.ageSex || '';
+                        document.getElementById('patientId').value = data.patientId || '';
+                        document.getElementById('assessmentDate').value = data.assessmentDate || '';
+                        document.getElementById('complaints').value = data.complaints || '';
+                        document.getElementById('pastHistory').value = data.pastHistory || '';
+                        document.getElementById('additionalPoints').value = data.additionalPoints || '';
+                        document.getElementById('referredBy').value = data.referredBy || '';
+                        
+                        showStatusMessage('Auto-saved data restored for ' + data.name, 'success');
+                        validateForm();
+                    }
+                } catch (e) {
+                    console.log('Could not restore auto-saved data');
+                }
+            }
+        }
+
+        function loadPreviousData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data.patient) {
+                                const patient = data.patient;
+                                document.getElementById('patientName').value = patient.name || '';
+                                document.getElementById('ageSex').value = patient.ageSex || '';
+                                document.getElementById('patientId').value = patient.patientId || '';
+                                document.getElementById('assessmentDate').value = patient.assessmentDate || '';
+                                document.getElementById('complaints').value = patient.complaints || '';
+                                document.getElementById('pastHistory').value = patient.pastHistory || '';
+                                document.getElementById('additionalPoints').value = patient.additionalPoints || '';
+                                document.getElementById('referredBy').value = patient.referredBy || '';
+                                
+                                showStatusMessage('Patient data loaded successfully!', 'success');
+                                validateForm();
+                            } else {
+                                showStatusMessage('Invalid file format. Please select a valid 4-PCAM file.', 'error');
+                            }
+                        } catch (error) {
+                            showStatusMessage('Error reading file. Please check the file format.', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function showStatusMessage(message, type) {
+            const statusEl = document.getElementById('status-message');
+            statusEl.textContent = message;
+            statusEl.className = `status-message status-${type}`;
+            statusEl.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(hideStatusMessage, 5000);
+            }
+        }
+
+        function hideStatusMessage() {
+            const statusEl = document.getElementById('status-message');
+            statusEl.style.display = 'none';
+        }
+
+        function proceedToAgni() {
+            const name = document.getElementById('patientName').value.trim();
+            const ageSex = document.getElementById('ageSex').value.trim();
+            const complaints = document.getElementById('complaints').value.trim();
+            
+            if (!name || !ageSex || !complaints) {
+                showStatusMessage('Please fill in all required fields before proceeding.', 'error');
+                return;
+            }
+            
+            // Save data before proceeding
+            const savedData = savePatientData();
+            
+            // Store in sessionStorage for immediate access by next page
+            sessionStorage.setItem('4pcam_current_patient', JSON.stringify(savedData));
+            
+            // Navigate to Agni assessment
+            window.location.href = 'agni-dusti.html';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                savePatientData();
+                showStatusMessage('Patient data saved!', 'success');
+            }
+            if (e.key === 'Enter' && e.ctrlKey) {
+                proceedToAgni();
+            }
+        });
+
+        console.log("✅ Patient Information System loaded successfully!");
+    </script>
+</body>
+</html>
