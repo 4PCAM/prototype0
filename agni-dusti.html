@@ -381,12 +381,7 @@
                     </tr>
                 </tbody>
             </table>
-
-            <div class="selected-symptoms" id="selected-symptoms" style="display: none;">
-                <h5>📋 Selected Symptoms</h5>
-                <div class="symptom-list" id="symptom-list"></div>
-            </div>
-
+            
             <div class="score-summary">
                 <div class="score-card">
                     <h4>Viṣama Agni</h4>
@@ -550,25 +545,6 @@
 
             // Check completion
             checkCompletion();
-        }
-
-        function updateSelectedSymptoms() {
-            const symptomsEl = document.getElementById('selected-symptoms');
-            const listEl = document.getElementById('symptom-list');
-            
-            const symptoms = Object.values(agniData.selectedSymptoms);
-            
-            if (symptoms.length > 0) {
-                symptomsEl.style.display = 'block';
-                listEl.innerHTML = symptoms.map(s => `
-                    <div class="symptom-item">
-                        <strong>${s.parameter.charAt(0).toUpperCase() + s.parameter.slice(1)}:</strong> ${s.symptom}
-                        <br><small>(${s.type.charAt(0).toUpperCase() + s.type.slice(1)} Agni)</small>
-                    </div>
-                `).join('');
-            } else {
-                symptomsEl.style.display = 'none';
-            }
         }
 
         function updateResults() {
