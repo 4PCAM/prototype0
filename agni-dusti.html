@@ -465,12 +465,12 @@
             } else {
                 // Redirect back to patient info if no data found
                 alert('No patient data found. Please complete patient information first.');
-                window.location.href = 'patient-info.html';
+                window.location.href = 'index.html';
             }
         }
 
         function displayPatientInfo() {
-            const infoEl = document.getElementById('patient-info');
+            const infoEl = document.getElementById('index');
             if (patientData.name) {
                 infoEl.innerHTML = `
                     <div><strong>Patient:</strong> ${patientData.name}</div>
